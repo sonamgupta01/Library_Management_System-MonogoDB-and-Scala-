@@ -83,6 +83,4 @@ library-management/
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details. 
+![image](https://github.com/user-attachments/assets/6648ac15-9062-4334-8ef6-5d0bbcb6de0b)
