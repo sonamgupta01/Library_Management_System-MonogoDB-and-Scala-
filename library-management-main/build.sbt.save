@@ -1,0 +1,8 @@
+ (project in file("."))
+  .settings(
+    name := "library-management",
+    libraryDependencies += munit % Test
+  )
+
+// See https://www.scala-sbt.org/1.x/docs/Using-Sonatype.html for instructions on how to publish to Sonatype.
+libraryDependencies += "org.mongodb.scala" %% "mongo-scala-driver" % "4.10.2"

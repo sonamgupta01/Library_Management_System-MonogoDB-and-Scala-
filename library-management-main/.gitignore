@@ -1,0 +1,33 @@
+# Scala
+*.class
+*.log
+*.ctxt
+.project
+.classpath
+.settings/
+bin/
+target/
+.scala_dependencies
+.worksheet
+
+# SBT
+dist/
+target/
+lib_managed/
+src_managed/
+project/boot/
+project/plugins/project/
+.history
+
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

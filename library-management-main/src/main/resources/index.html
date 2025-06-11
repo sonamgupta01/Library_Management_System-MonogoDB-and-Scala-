@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold text-center mb-8 text-gray-800">Library Management System</h1>
+        
+        <!-- Tabs -->
+        <div class="flex justify-center mb-8">
+            <button class="tab-btn active px-6 py-2 rounded-l-lg bg-blue-500 text-white" data-tab="books">Books</button>
+            <button class="tab-btn px-6 py-2 bg-gray-200 text-gray-700" data-tab="users">Users</button>
+            <button class="tab-btn px-6 py-2 rounded-r-lg bg-gray-200 text-gray-700" data-tab="loans">Loans</button>
+        </div>
+
+        <!-- Books Section -->
+        <div id="books" class="tab-content">
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <h2 class="text-2xl font-semibold mb-4">Add New Book</h2>
+                <form id="addBookForm" class="space-y-4">
+                    <div>
+                        <label class="block text-gray-700">Title</label>
+                        <input type="text" name="title" class="w-full px-4 py-2 border rounded-lg" required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700">Author</label>
+                        <input type="text" name="author" class="w-full px-4 py-2 border rounded-lg" required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700">Copies</label>
+                        <input type="number" name="copies" class="w-full px-4 py-2 border rounded-lg" required min="1">
+                    </div>
+                    <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600">
+                        Add Book
+                    </button>
+                </form>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-semibold mb-4">Available Books</h2>
+                <div id="booksList" class="space-y-4">
+                    <!-- Books will be listed here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Section -->
+        <div id="users" class="tab-content hidden">
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <h2 class="text-2xl font-semibold mb-4">Add New User</h2>
+                <form id="addUserForm" class="space-y-4">
+                    <div>
+                        <label class="block text-gray-700">Name</label>
+                        <input type="text" name="name" class="w-full px-4 py-2 border rounded-lg" required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700">Email</label>
+                        <input type="email" name="email" class="w-full px-4 py-2 border rounded-lg" required>
+                    </div>
+                    <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600">
+                        Add User
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Loans Section -->
+        <div id="loans" class="tab-content hidden">
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <h2 class="text-2xl font-semibold mb-4">Issue Book</h2>
+                <form id="issueBookForm" class="space-y-4">
+                    <div>
+                        <label class="block text-gray-700">Book Title</label>
+                        <input type="text" name="bookTitle" class="w-full px-4 py-2 border rounded-lg" required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700">User Email</label>
+                        <input type="email" name="userEmail" class="w-full px-4 py-2 border rounded-lg" required>
+                    </div>
+                    <button type="submit" class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600">
+                        Issue Book
+                    </button>
+                </form>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-semibold mb-4">Return Book</h2>
+                <form id="returnBookForm" class="space-y-4">
+                    <div>
+                        <label class="block text-gray-700">Book Title</label>
+                        <input type="text" name="bookTitle" class="w-full px-4 py-2 border rounded-lg" required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700">User Email</label>
+                        <input type="email" name="userEmail" class="w-full px-4 py-2 border rounded-lg" required>
+                    </div>
+                    <button type="submit" class="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600">
+                        Return Book
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons and hide all content
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.remove('active', 'bg-blue-500', 'text-white');
+                    btn.classList.add('bg-gray-200', 'text-gray-700');
+                });
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.add('hidden');
+                });
+
+                // Add active class to clicked button and show corresponding content
+                button.classList.remove('bg-gray-200', 'text-gray-700');
+                button.classList.add('active', 'bg-blue-500', 'text-white');
+                document.getElementById(button.dataset.tab).classList.remove('hidden');
+            });
+        });
+
+        // API calls
+        async function fetchBooks() {
+            const response = await fetch('/books');
+            const books = await response.json();
+            const booksList = document.getElementById('booksList');
+            booksList.innerHTML = books.map(book => `
+                <div class="border rounded-lg p-4">
+                    <h3 class="text-xl font-semibold">${book.title}</h3>
+                    <p class="text-gray-600">Author: ${book.author}</p>
+                    <p class="text-gray-600">Available copies: ${book.availableCopies} / ${book.copies}</p>
+                </div>
+            `).join('');
+        }
+
+        // Form submissions
+        document.getElementById('addBookForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const book = {
+                title: formData.get('title'),
+                author: formData.get('author'),
+                copies: parseInt(formData.get('copies')),
+                availableCopies: parseInt(formData.get('copies'))
+            };
+
+            try {
+                const response = await fetch('/books', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(book)
+                });
+                if (response.ok) {
+                    e.target.reset();
+                    fetchBooks();
+                    alert('Book added successfully!');
+                } else {
+                    alert('Failed to add book');
+                }
+            } catch (error) {
+                alert('Error adding book');
+            }
+        });
+
+        document.getElementById('addUserForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const user = {
+                name: formData.get('name'),
+                email: formData.get('email')
+            };
+
+            try {
+                const response = await fetch('/users', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(user)
+                });
+                if (response.ok) {
+                    e.target.reset();
+                    alert('User added successfully!');
+                } else {
+                    alert('Failed to add user');
+                }
+            } catch (error) {
+                alert('Error adding user');
+            }
+        });
+
+        document.getElementById('issueBookForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const loan = {
+                bookId: formData.get('bookTitle'),
+                userId: formData.get('userEmail'),
+                loanDate: Date.now(),
+                returnDate: null
+            };
+
+            try {
+                const response = await fetch('/loans', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(loan)
+                });
+                if (response.ok) {
+                    e.target.reset();
+                    fetchBooks();
+                    alert('Book issued successfully!');
+                } else {
+                    alert('Failed to issue book');
+                }
+            } catch (error) {
+                alert('Error issuing book');
+            }
+        });
+
+        document.getElementById('returnBookForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const loan = {
+                bookId: formData.get('bookTitle'),
+                userId: formData.get('userEmail'),
+                loanDate: Date.now(),
+                returnDate: Date.now()
+            };
+
+            try {
+                const response = await fetch('/returns', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(loan)
+                });
+                if (response.ok) {
+                    e.target.reset();
+                    fetchBooks();
+                    alert('Book returned successfully!');
+                } else {
+                    alert('Failed to return book');
+                }
+            } catch (error) {
+                alert('Error returning book');
+            }
+        });
+
+        // Initial load
+        fetchBooks();
+    </script>
+</body>
+</html> 
